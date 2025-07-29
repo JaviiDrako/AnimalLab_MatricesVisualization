@@ -1,0 +1,177 @@
+import pygame
+import sys
+from fractions import Fraction
+from image import ImageManager
+from visualizer import Visualizer
+
+pygame.init()
+
+WIDTH, HEIGHT = 1000, 800
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+font = pygame.font.SysFont("Consolas", 28)
+font2 = pygame.font.SysFont("Consolas", 13)
+
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Gauss-Jordan Trainer: Plaga")
+
+clock = pygame.time.Clock()
+FPS = 60
+
+# Screen center
+center_x = WIDTH // 2
+start_y = 400  
+
+# Augmented matrix example
+matrix = [
+    [Fraction(2), Fraction(1), Fraction(5)],
+    [Fraction(4), Fraction(-6), Fraction(-2)]
+]
+
+ROWS = len(matrix)
+COLS = len(matrix[0])
+
+# Upload virus and Visualizer
+virus_image = ImageManager("assets/virus.png")
+virus_pixels = virus_image.get_centered_pixels()
+
+visualizer = Visualizer(
+    screen=screen,
+    pixels=virus_pixels,
+    center=(center_x, start_y - 200),
+    scale=1
+)
+
+def fraction_str(fraction):
+    if fraction.denominator == 1:
+        return f"{fraction.numerator}"
+    else:
+        return f"{fraction.numerator}/{fraction.denominator}"
+
+def is_reduced_to_identity():
+    for i, row in enumerate(matrix):
+        for j in range(len(row) - 1):
+            if i == j:
+                if row[j] != 1:
+                    return False
+            else:
+                if row[j] != 0:
+                    return False
+    return True
+
+def draw_matrix():
+    # Find the maximun number of characters that any element of the matrix occupies
+    max_element_width = 0
+    for row in matrix:
+        for element in row:
+            element_str = fraction_str(element)
+            if len(element_str) > max_element_width:
+                max_element_width = len(element_str)
+
+    # Draw matrix
+    for row_index, row_values in enumerate(matrix):
+        left_bracket = "[ "
+        right_bracket = "]"
+        separator = " | "
+
+        formatted_coefficients = []
+        for coefficient in row_values[:-1]:
+            coefficient_str = fraction_str(coefficient)
+            padded_coefficient = f"{coefficient_str:>{max_element_width}}"
+            formatted_coefficients.append(padded_coefficient)
+
+        left_side_text = "  ".join(formatted_coefficients)
+
+        independent_term = row_values[-1]
+        independent_term_str = fraction_str(independent_term)
+        padded_independent_term = f"{independent_term_str:>{max_element_width}}"
+
+        row_label = f"F{row_index + 1}:  "
+        full_row_text = (
+            row_label
+            + left_bracket
+            + left_side_text
+            + separator
+            + padded_independent_term
+            + right_bracket
+        )
+
+        text_surface = font.render(full_row_text, True, BLACK)
+        screen.blit(text_surface, (center_x - 250, start_y + row_index * 50))
+
+    # Instructions
+    instructions_text = (
+        "Operations: swap i j | mult i factor | add i j factor -> i * factor + j ; i=Origin Row j=Target Row"
+    )
+    instructions_surface = font2.render(instructions_text, True, BLACK)
+    screen.blit(instructions_surface, (50, HEIGHT - 40))
+
+
+def prompt_for_operation():
+    print("\nEnter the operation (e.g.: swap 1 2 | mult 1 1/2 | add 1 2 -2/3): ", end="")
+    user_input = input().strip().split()
+    if not user_input:
+        return
+    
+    command = user_input[0]
+    
+    try:
+        if command == "swap" and len(user_input) == 3:
+            row1_index = int(user_input[1]) - 1
+            row2_index = int(user_input[2]) - 1
+            matrix[row1_index], matrix[row2_index] = matrix[row2_index], matrix[row1_index]
+        elif command == "mult" and len(user_input) == 3:
+            row_index = int(user_input[1]) - 1
+            multiplier = Fraction(user_input[2])
+            matrix[row_index] = [
+                element * multiplier for element in matrix[row_index]
+            ]
+        elif command == "add" and len(user_input) == 4:
+            source_row_index = int(user_input[1]) - 1
+            target_row_index = int(user_input[2]) - 1
+            scale_factor = Fraction(user_input[3])
+            updated_row = []
+            for column_index in range(len(matrix[target_row_index])):
+                target_element = matrix[target_row_index][column_index]
+                source_element = matrix[source_row_index][column_index]
+                new_value = source_element * scale_factor + target_element
+                updated_row.append(new_value)
+            matrix[target_row_index] = updated_row
+        else:
+            print("❌ Unrecognized or malformed command.")
+        
+    except Exception as error:
+        print(f"❌ Error: {error}")
+
+
+
+
+system_resolved = False 
+running = True
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    screen.fill(WHITE)
+
+    # Draw virus
+    visualizer.update()
+    visualizer.draw()
+
+    draw_matrix()
+
+    pygame.display.flip()
+
+    if not system_resolved:
+        prompt_for_operation()
+        if is_reduced_to_identity():
+            visualizer.set_target_matrix([[0, 0], [0, 0]]) 
+            system_resolved = True 
+
+    clock.tick(FPS)
+
+pygame.quit()
+sys.exit()
