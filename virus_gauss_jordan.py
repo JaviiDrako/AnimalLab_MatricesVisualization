@@ -289,7 +289,7 @@ class VirusPlayer:
 
             if remaining_time <= 0:
                 self.show_timeout_message("Tiempo agotado!")  
-                return  # Exit to menu
+                return "menu" 
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -321,7 +321,7 @@ class VirusPlayer:
                 virus.draw()
 
             if self.level_completed and animations_complete:
-                return  # Proceed to next level
+                return "next"
 
             self.draw_matrix()
 
@@ -335,4 +335,6 @@ class VirusPlayer:
 
             pygame.display.flip()
             self.clock.tick(self.FPS)
+
+        return "menu"
 

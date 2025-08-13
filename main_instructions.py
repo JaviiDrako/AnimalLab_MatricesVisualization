@@ -6,7 +6,7 @@ class InstructionMainScreen:
         self.screen = screen
         self.width = width
         self.height = height
-        self.background = pygame.transform.scale(pygame.image.load("assets/instrucciones.png"), (width, height))
+        self.background = pygame.transform.scale(pygame.image.load("assets/main_instructions.png"), (width, height))
         self.font = pygame.font.Font("assets/pixel_font.ttf", 60)
         self.input_grid = MatrixInputGrid(
             x=(width - 170) // 2,

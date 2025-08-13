@@ -21,7 +21,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Animatrices Laboratory")
 clock = pygame.time.Clock()
 
-original_bg = pygame.image.load("assets/fondo_juego.png").convert()
+original_bg = pygame.image.load("assets/bg_game.png").convert()
 background = pygame.transform.scale(original_bg, (WIDTH, HEIGHT))
 
 phase1_levels = [ 
@@ -76,7 +76,7 @@ def show_lore(screen):
     video.play("assets/intro_lore.mp4", "assets/intro_lore.wav")
 
     font = pygame.font.Font("assets/pixel_font.ttf", 35)
-    image = pygame.image.load("assets/letras_completas.png").convert()
+    image = pygame.image.load("assets/complete_letters.png").convert()
     image = pygame.transform.scale(image, (screen.get_width(), screen.get_height()))
     button = pygame.Rect(screen.get_width() // 2 - 100, screen.get_height() - 110, 200, 55) 
 
@@ -244,7 +244,7 @@ def run_level(image_path, target_matrix, phase):
 
     pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=4096)
     pygame.mixer.init()
-    pygame.mixer.music.load("assets/musica.wav")
+    pygame.mixer.music.load("assets/lab_music.wav")
     pygame.mixer.music.set_volume(0.7)
     pygame.mixer.music.play(-1) 
     explosion_sound = pygame.mixer.Sound("assets/explosion.mp3")
@@ -401,6 +401,7 @@ while True:
 
     if selected_option == "juego":  
         phase1_result = ""  
+        phase2_result = ""
         
         instruction_screen = InstructionMainScreen(screen, WIDTH, HEIGHT) 
         instruction_screen.run()
@@ -412,11 +413,11 @@ while True:
         pygame.mixer.music.load("assets/vhs_sound.mp3")
         pygame.mixer.music.set_volume(0.5)
         pygame.mixer.music.play(-1)
-        phase1_intro = VideoLoopInstructions(screen, "assets/fase1_intro.mp4")  
+        phase1_intro = VideoLoopInstructions(screen, "assets/phase1_intro.mp4")  
         phase1_intro.run()
 
         pygame.mixer.music.stop()
-        show_popup(screen, "assets/aviso_fase1.png")  
+        show_popup(screen, "assets/phase1_warning.png")  
 
         TestStage(screen, WIDTH, HEIGHT, 1).run()
 
@@ -436,30 +437,33 @@ while True:
             pygame.mixer.music.load("assets/vhs_sound.mp3")
             pygame.mixer.music.play(-1)
             pygame.mixer.music.set_volume(0.4)
-            phase2_intro = VideoLoopInstructions(screen, "assets/fase2_intro.mp4") 
+            phase2_intro = VideoLoopInstructions(screen, "assets/phase2_intro.mp4") 
             phase2_intro.run()
 
             pygame.mixer.music.stop()
-            show_popup(screen, "assets/aviso_fase2.png")
+            show_popup(screen, "assets/phase2_warning.png")
 
             TestStage(screen, WIDTH, HEIGHT, 2).run() 
 
             # Play phase 2 levels
             for idx, level in enumerate(phase2_levels): 
-                result = run_level(level["image"], level["target_matrix"], phase=2)
-                if result == "menu":  
+                phase2_result = run_level(level["image"], level["target_matrix"], phase=2)
+                if phase2_result == "menu":  
                     break
 
-            # Virus section introduction
-            virus_intro = VideoPlayer(screen) 
-            virus_intro.play("assets/virus_alert.mp4", "assets/warning.mp3", 0.5)
+            if phase2_result != "menu":
+                # Virus section introduction
+                virus_intro = VideoPlayer(screen) 
+                virus_intro.play("assets/virus_alert.mp4", "assets/warning.mp3", 0.5)
 
-            show_popup(screen, "assets/virus_instructions.png")
+                show_popup(screen, "assets/virus_instructions.png")
 
-            # Play virus levels
-            for level_num in range(1, 6): 
-                trainer = VirusPlayer(screen, level=level_num)
-                trainer.run() 
+                # Play virus levels
+                for level_num in range(1, 6): 
+                    trainer = VirusPlayer(screen, level=level_num)
+                    result = trainer.run() 
+                    if result == "menu" or result is None: 
+                        break 
 
     elif selected_option == "salir": 
         pygame.quit()
