@@ -33,65 +33,65 @@ phase1_levels = [
     },
     {
         "image": "assets/snake.png",
-        "target_matrix": [[2, 0], [0, 1]]
+        "target_matrix": [[1.5, 0], [0, 2]]
     },
     {
         "image": "assets/elephant.png",
-        "target_matrix": [[1, 0], [0, 2]]
+        "target_matrix": [[1, 0], [0, 0.5]]
     },
     {
         "image": "assets/crab.png",
-        "target_matrix": [[1, 0], [0, 2]]
+        "target_matrix": [[0.5, 0], [0, 3]]
     },
     {
         "image": "assets/goat.png",
-        "target_matrix": [[1, 0], [0, 2]]
+        "target_matrix": [[2.4, 0], [0, 1.8]]
     }
 ]
 
 phase2_levels = [ 
     {
         "image": "assets/dolphin.png",
-        "target_matrix": [[2, 1], [0, 2]]
+        "target_matrix": [[1, 0.3], [0, 1]]
     },
     {
         "image": "assets/capybara.png",
-        "target_matrix": [[1, -1], [0, 1]]
+        "target_matrix": [[1.5, 0], [-0.5, 1]]
     },
     {
         "image": "assets/eagle.png",
-        "target_matrix": [[1, -1], [0, 1]]
+        "target_matrix": [[2, 0], [1, 1]]
     },
     {
         "image": "assets/pig.png",
-        "target_matrix": [[1, -1], [0, 1]]
+        "target_matrix": [[4, -2], [0, 0.5]]
     },
     {
         "image": "assets/panda.png",
-        "target_matrix": [[1, -1], [0, 1]]
+        "target_matrix": [[3.5, -1], [1, 0.8]]
     },
 ]
 
 phase3_levels = [
     {
         "image": "assets/gorilla.png",
-        "target_matrix": [[0, -1], [1, 0]], 
+        "target_matrix": [[1.2, -1.8], [-2.8, 0.2]], 
     },
     {
         "image": "assets/lion.png",
-        "target_matrix": [[-1, 0], [0, -1]], 
+        "target_matrix": [[0, 1], [-1, 1]], 
     },
     {
         "image": "assets/racoon.png",
-        "target_matrix": [[0, 1], [-1, 0]], 
+        "target_matrix": [[0.8, -0.5], [-0.5, 3.3]], 
     },
     {
         "image": "assets/toucan.png",
-        "target_matrix": [[1, 0], [0, -1]], 
+        "target_matrix": [[-0.5, -2.5], [1, -4.7]], 
     },
     {
         "image": "assets/penguin.png",
-        "target_matrix": [[-1, 0], [0, 1]], 
+        "target_matrix": [[-1, -3.4], [2, 1]], 
     }
 ]
 
@@ -247,16 +247,16 @@ def is_valid_phase2_matrix(matrix):
 def is_reducing_matrix(m): 
     return m[0][0] * m[1][1] - m[0][1] * m[1][0] == 0
 
-def are_matrices_equal(m1, m2, tolerance=0.5): 
+def are_matrices_equal(m1, m2, tolerance=0.1): 
     for i in range(2):
         for j in range(2):
             if abs(m1[i][j] - m2[i][j]) > tolerance:
                 return False
     return True
 
-def run_level(image_path, target_matrix, phase):
+def run_level(image_path, target_matrix, time, phase):
     start_time = time.time()
-    time_limit = 90
+    time_limit = time
     timed_out = False
 
     image = ImageManager(image_path)
@@ -483,7 +483,7 @@ while True:
 
         # Play phase 1 levels
         for idx, level in enumerate(phase1_levels):  
-            phase1_result = run_level(level["image"], level["target_matrix"], 1)  
+            phase1_result = run_level(level["image"], level["target_matrix"], 90, 1)  
             if phase1_result == "menu":  
                 break
 
@@ -507,7 +507,7 @@ while True:
 
             # Play phase 2 levels
             for idx, level in enumerate(phase2_levels): 
-                phase2_result = run_level(level["image"], level["target_matrix"], phase=2)
+                phase2_result = run_level(level["image"], level["target_matrix"], 120, 2)
                 if phase2_result == "menu":  
                     break
 
@@ -546,7 +546,7 @@ while True:
 
                     # Play phase 3 levels
                     for idx, level in enumerate(phase3_levels): 
-                        phase3_result = run_level(level["image"], level["target_matrix"], phase=3)
+                        phase3_result = run_level(level["image"], level["target_matrix"], 140, 3)
                         if phase3_result == "menu":  
                             break
 
