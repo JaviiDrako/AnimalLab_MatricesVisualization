@@ -11,6 +11,7 @@ from test_stage import TestStage
 from completed_level_popup import LevelCompletedPopup 
 from virus_gauss_jordan import VirusPlayer
 from rotation_helper import RotationHelper
+from free_mode_stage import FreeModeStage
 
 pygame.init()
 
@@ -460,6 +461,7 @@ while True:
     if selected_option == "juego":  
         phase1_result = ""  
         phase2_result = ""
+        phase3_result = ""
         
         instruction_screen = InstructionMainScreen(screen, WIDTH, HEIGHT) 
         instruction_screen.run()
@@ -548,7 +550,22 @@ while True:
                         if phase3_result == "menu":  
                             break
 
+                    if phase3_result != "menu":
+                        pygame.mixer.music.stop()
 
-    elif selected_option == "salir": 
+                        video = VideoPlayer(screen)
+                        video.play("assets/ending1.mp4")
+                        
+                        video = VideoPlayer(screen)
+                        video.play("assets/ending2.mp4", "assets/monster_roar.mp3")
+
+                        continue
+
+    elif selected_option == "libre":
+        pygame.mixer.music.stop() 
+
+        FreeModeStage(screen, WIDTH, HEIGHT).run()
+
+    else: 
         pygame.quit()
         exit()
