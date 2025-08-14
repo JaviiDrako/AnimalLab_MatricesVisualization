@@ -540,6 +540,8 @@ while True:
                     pygame.mixer.music.stop()
                     show_popup(screen, "assets/phase3_warning.png")
 
+                    TestStage(screen, WIDTH, HEIGHT, 3).run() 
+
                     # Play phase 3 levels
                     for idx, level in enumerate(phase3_levels): 
                         phase3_result = run_level(level["image"], level["target_matrix"], phase=3)
