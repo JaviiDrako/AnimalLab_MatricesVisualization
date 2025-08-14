@@ -8,10 +8,9 @@ class MatrixInputGrid:
         self.font = font or pygame.font.SysFont(None, 36)
 
         self.cell_values = [["", ""], ["", ""]] 
-        self.active_cell = None  # Ninguna celda activa al inicio
-        self.active = False  # Control de foco
+        self.active_cell = None 
+        self.active = False  
 
-        # Crear rectángulos de cada celda
         self.cell_rects = [      
             [
                 pygame.Rect(x + col * cell_size, y + row * cell_size, cell_size, cell_size)
@@ -21,7 +20,6 @@ class MatrixInputGrid:
         ]
 
     def draw(self, screen):
-        # Dibujar corchetes grandes
         padding = 10
         top = self.y - padding
         left = self.x - padding
@@ -39,7 +37,6 @@ class MatrixInputGrid:
         pygame.draw.line(screen, bracket_color, (right, top), (right - 10, top), line_thickness)
         pygame.draw.line(screen, bracket_color, (right, bottom), (right - 10, bottom), line_thickness)
 
-        # Dibujar celdas
         for row in range(2):        
             for col in range(2):   
                 cell_rect = self.cell_rects[row][col]
@@ -88,12 +85,10 @@ class MatrixInputGrid:
             for col in range(2):
                 val_str = self.cell_values[row][col].strip()
                 if val_str == "":
-                    # Si hay alguna celda vacía, toda la matriz es inválida
                     return None
                 try:
                     val = float(val_str)
                 except ValueError:
-                    # Si no es un número válido, también considerar inválido
                     return None
                 current_row.append(val)
             result.append(current_row)

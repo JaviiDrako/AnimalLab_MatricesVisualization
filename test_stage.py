@@ -93,12 +93,12 @@ class TestStage:
 
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN and not self.applying_input:
-                        input_matrix = self.input_grid.get_matrix()  # Esto puede devolver None
+                        input_matrix = self.input_grid.get_matrix() 
 
                         if input_matrix is None:
                             self.error_message = "¡Completa todas las celdas!"
                             self.error_message_time = current_time
-                            continue  # No hacer nada más
+                            continue  
 
                         is_valid = True
                         if self.phase == 1:
@@ -130,7 +130,7 @@ class TestStage:
             button_text = self.font.render("Comenzar Fase", True, (0, 0, 0)) 
             self.screen.blit(button_text, button_text.get_rect(center=self.start_button.center))
 
-            reset_color = (200, 80, 80) if self.reset_button.collidepoint(mouse_pos) else (170, 50, 50)  # Changed 'color'
+            reset_color = (200, 80, 80) if self.reset_button.collidepoint(mouse_pos) else (170, 50, 50) 
             pygame.draw.rect(self.screen, reset_color, self.reset_button, border_radius=8)
             pygame.draw.rect(self.screen, (0, 0, 0), self.reset_button, 3, border_radius=8)
             icon_x = self.reset_button.x + (self.reset_button.width - self.reset_icon.get_width()) // 2

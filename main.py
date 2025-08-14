@@ -271,10 +271,10 @@ def run_level(image_path, target_matrix, phase):
     input_grid = MatrixInputGrid(x=(WIDTH - 150)//2, y=HEIGHT - 200, cell_size=70,
                                  font=pygame.font.Font("assets/pixel_font.ttf", 35))
 
-    # Rotation Helper solo para fase 3
+    # Rotation Helper only for phase 3
     rotation_helper = None
     if phase == 3:
-        rotation_helper = RotationHelper(x=WIDTH-350, y=HEIGHT-300, width=300, height=200)
+        rotation_helper = RotationHelper(x=WIDTH-320, y=HEIGHT-270, width=300, height=220)
 
     timer_font = pygame.font.Font("assets/pixel_font.ttf", 45)
     error_font = pygame.font.Font("assets/pixel_font.ttf", 32)
@@ -342,29 +342,29 @@ def run_level(image_path, target_matrix, phase):
             show_timeout(screen, "¡Tiempo agotado!")
             return "menu"
 
-        # Eventos
+        # Events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
 
-            # Si fase 3, manejamos rotation_helper
+            # If phase 3, use rotation_helper
             if rotation_helper:
                 rotation_helper.handle_event(event)
 
-            # Solo procesar matriz si angle_input NO está activo
+            # Only process matrix if angle_input is NOT active 
             if not (rotation_helper and rotation_helper.angle_input.active):
                 input_grid.handle_event(event)
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN and not applying_input:
                     input_matrix = input_grid.get_matrix()
 
-                    # Validación: si input_matrix es None, significa que hay celdas vacías
+                    # Validation: if input_matrix is None, there are empty cells.
                     if input_matrix is None:
                         show_error_message = True
                         error_time = pygame.time.get_ticks()
                         continue  # No aplicar la matriz
 
-                    # Validación por fase
+                    # validation per phase
                     if phase == 1:
                         is_valid = is_valid_phase1_matrix(input_matrix)
                     elif phase == 2:
@@ -382,7 +382,7 @@ def run_level(image_path, target_matrix, phase):
                         show_error_message = True
                         error_time = pygame.time.get_ticks()
 
-        # Dibujado
+        # Drawing
         screen.blit(background, (0, 0))
         done = player_visualizer.update()
         player_visualizer.draw()
@@ -401,7 +401,7 @@ def run_level(image_path, target_matrix, phase):
         time_text = timer_font.render(f"Tiempo: {formatted_time}", True, (255, 80, 80))
         screen.blit(time_text, (30, 30))
 
-        # Mensaje de error
+        # Error message
         if show_error_message:
             now = pygame.time.get_ticks()
             if now - error_time < 2000:
@@ -413,7 +413,7 @@ def run_level(image_path, target_matrix, phase):
         pygame.display.flip()
         clock.tick(FPS)
 
-        # Aplicación de input
+        # Apply input
         if applying_input and done:
             if is_reducing:
                 pygame.mixer.music.stop()
@@ -439,7 +439,6 @@ def run_level(image_path, target_matrix, phase):
 
             applying_input = False
 
-        # Comprobación de victoria
         if done and not timed_out:
             if are_matrices_equal(player_visualizer.current_matrix, target_matrix):
                 pygame.time.wait(1000)
@@ -551,4 +550,3 @@ while True:
     elif selected_option == "salir": 
         pygame.quit()
         exit()
-
