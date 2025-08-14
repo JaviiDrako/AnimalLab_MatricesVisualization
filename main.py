@@ -40,7 +40,7 @@ phase1_levels = [
     },
     {
         "image": resource_path("assets/elephant.png"),
-        "target_matrix": [[1, 0], [0, 0.5]]
+        "target_matrix": [[3, 0], [0, 0.5]]
     },
     {
         "image": resource_path("assets/crab.png"),
@@ -55,7 +55,7 @@ phase1_levels = [
 phase2_levels = [ 
     {
         "image": resource_path("assets/dolphin.png"),
-        "target_matrix": [[1, 0.3], [0, 1]]
+        "target_matrix": [[1, 0.3], [0, 0.5]]
     },
     {
         "image": resource_path("assets/capybara.png"),
@@ -71,7 +71,7 @@ phase2_levels = [
     },
     {
         "image": resource_path("assets/panda.png"),
-        "target_matrix": [[3.5, -1], [1, 0.8]]
+        "target_matrix": [[2.5, -1], [1, 3.7]]
     },
 ]
 
@@ -250,7 +250,7 @@ def is_valid_phase2_matrix(matrix):
 def is_reducing_matrix(m): 
     return m[0][0] * m[1][1] - m[0][1] * m[1][0] == 0
 
-def are_matrices_equal(m1, m2, tolerance=0.1): 
+def are_matrices_equal(m1, m2, tolerance=0.2): 
     for i in range(2):
         for j in range(2):
             if abs(m1[i][j] - m2[i][j]) > tolerance:
