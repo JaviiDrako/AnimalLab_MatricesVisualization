@@ -2,6 +2,7 @@ import pygame
 from imagen import ImageManager
 from visualizer import Visualizer
 from matrix_input_grid import MatrixInputGrid
+from rotation_helper import RotationHelper 
 
 class TestStage:
     def __init__(self, screen, width, height, phase): 
@@ -18,8 +19,8 @@ class TestStage:
         self.start_button = pygame.Rect(width // 2 - 900, height - 110, 280, 55)  
 
         self.reset_icon_size = 100
-        self.reset_button = pygame.Rect(width - self.reset_icon_size - 100,
-                                      height - self.reset_icon_size - 100,
+        self.reset_button = pygame.Rect(width - self.reset_icon_size - 70,
+                                      height - self.reset_icon_size - 910,
                                       self.reset_icon_size,
                                       self.reset_icon_size)
 
@@ -53,6 +54,15 @@ class TestStage:
             font=self.font
         )
 
+        self.rotation_helper = None
+        if self.phase == 3:
+            self.rotation_helper = RotationHelper(
+                x=self.width - 320,
+                y=self.height - 270,
+                width=300,
+                height=220
+            )
+
         self.applying_input = False
         self.error_message = ""
         self.error_message_time = 0
@@ -83,6 +93,13 @@ class TestStage:
                     pygame.quit()
                     exit()
 
+                if self.rotation_helper:
+                    self.rotation_helper.angle_input.handle_event(event)
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                        if self.rotation_helper.angle_input.active:
+                            angle = self.rotation_helper.angle_input.get_value()
+                            self.rotation_helper.update(angle)
+
                 self.input_grid.handle_event(event)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -93,35 +110,38 @@ class TestStage:
 
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN and not self.applying_input:
-                        input_matrix = self.input_grid.get_matrix() 
+                        if not (self.rotation_helper and self.rotation_helper.angle_input.active):
+                            input_matrix = self.input_grid.get_matrix() 
 
-                        if input_matrix is None:
-                            self.error_message = "¡Completa todas las celdas!"
-                            self.error_message_time = current_time
-                            continue  
+                            if input_matrix is None:
+                                self.error_message = "¡Completa todas las celdas!"
+                                self.error_message_time = current_time
+                                continue  
 
-                        is_valid = True
-                        if self.phase == 1:
-                            is_valid = self.is_valid_phase1_matrix(input_matrix)
-                        elif self.phase == 2:
-                            is_valid = self.is_valid_phase2_matrix(input_matrix)
+                            is_valid = True
+                            if self.phase == 1:
+                                is_valid = self.is_valid_phase1_matrix(input_matrix)
+                            elif self.phase == 2:
+                                is_valid = self.is_valid_phase2_matrix(input_matrix)
 
-                        if not is_valid:
-                            self.error_message = "¡Matriz invalida!"
-                            self.error_message_time = current_time
-                        else:
-                            self.visualizer.set_target_matrix(input_matrix)
-                            self.applying_input = True
-                            self.input_grid.clear()
-                            self.error_message = ""
+                            if not is_valid:
+                                self.error_message = "¡Matriz invalida!"
+                                self.error_message_time = current_time
+                            else:
+                                self.visualizer.set_target_matrix(input_matrix)
+                                self.applying_input = True
+                                self.input_grid.clear()
+                                self.error_message = ""
 
             self.screen.blit(self.background, (0, 0))
 
-            # Test dummy
             done = self.visualizer.update()
             self.visualizer.draw()
 
             self.input_grid.draw(self.screen)
+
+            if self.rotation_helper:
+                self.rotation_helper.draw(self.screen)
 
             mouse_pos = pygame.mouse.get_pos()
             button_color = (40, 200, 190) if self.start_button.collidepoint(mouse_pos) else (10, 170, 190)  
