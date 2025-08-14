@@ -1,43 +1,5 @@
 import pygame
 
-class MatrixCellInput:
-    def __init__(self, x, y, width, height, font, initial_text=""):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.inactive_color = pygame.Color('gray')  
-        self.active_color = pygame.Color('black')  
-        self.current_color = self.inactive_color  
-        self.text = initial_text
-        self.font = font
-        self.text_surface = font.render(self.text, True, self.current_color) 
-        self.is_active = False    
-
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.is_active = self.rect.collidepoint(event.pos)
-            self.current_color = self.active_color if self.is_active else self.inactive_color
-
-        if event.type == pygame.KEYDOWN and self.is_active:
-            if event.key == pygame.K_RETURN:
-                self.is_active = False
-                self.current_color = self.inactive_color
-            elif event.key == pygame.K_BACKSPACE:
-                self.text = self.text[:-1]
-            else:
-                if len(self.text) < 5:  # Character limit per cell
-                    self.text += event.unicode
-            self.text_surface = self.font.render(self.text, True, self.current_color)
-
-    def draw(self, screen):
-        screen.blit(self.text_surface, (self.rect.x + 5, self.rect.y + 5))
-        pygame.draw.rect(screen, self.current_color, self.rect, 2)
-
-    def get_value(self):
-        try:
-            return float(self.text)
-        except ValueError:
-            return 0.0
-
-
 class MatrixInputGrid:
     def __init__(self, x, y, cell_size=60, font=None):
         self.x = x
@@ -46,9 +8,10 @@ class MatrixInputGrid:
         self.font = font or pygame.font.SysFont(None, 36)
 
         self.cell_values = [["", ""], ["", ""]] 
-        self.active_cell = (0, 0)  # row, column
+        self.active_cell = None  # Ninguna celda activa al inicio
+        self.active = False  # Control de foco
 
-        # Cell position calculations
+        # Crear rectángulos de cada celda
         self.cell_rects = [      
             [
                 pygame.Rect(x + col * cell_size, y + row * cell_size, cell_size, cell_size)
@@ -58,15 +21,15 @@ class MatrixInputGrid:
         ]
 
     def draw(self, screen):
-        # Draw large brackets
+        # Dibujar corchetes grandes
         padding = 10
         top = self.y - padding
         left = self.x - padding
         bottom = self.y + 2 * self.cell_size + padding
         right = self.x + 2 * self.cell_size + padding
 
-        bracket_color = (0, 0, 0)  
-        line_thickness = 3          
+        bracket_color = (0, 0, 0)
+        line_thickness = 3
 
         pygame.draw.line(screen, bracket_color, (left, top), (left, bottom), line_thickness)
         pygame.draw.line(screen, bracket_color, (left, top), (left + 10, top), line_thickness)
@@ -76,14 +39,14 @@ class MatrixInputGrid:
         pygame.draw.line(screen, bracket_color, (right, top), (right - 10, top), line_thickness)
         pygame.draw.line(screen, bracket_color, (right, bottom), (right - 10, bottom), line_thickness)
 
-        # Draw cells
+        # Dibujar celdas
         for row in range(2):        
             for col in range(2):   
                 cell_rect = self.cell_rects[row][col]
                 pygame.draw.rect(screen, (255, 255, 255), cell_rect)
                 pygame.draw.rect(screen, (0, 0, 0), cell_rect, 2)
 
-                if (row, col) == self.active_cell:
+                if (row, col) == self.active_cell and self.active:
                     pygame.draw.rect(screen, (0, 0, 255), cell_rect, 2)
 
                 value_text = self.font.render(self.cell_values[row][col], True, (0, 0, 0)) 
@@ -92,12 +55,15 @@ class MatrixInputGrid:
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
+            self.active = False
+            self.active_cell = None
             for row in range(2):
                 for col in range(2):
                     if self.cell_rects[row][col].collidepoint(event.pos):
                         self.active_cell = (row, col)
+                        self.active = True
 
-        elif event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN and self.active and self.active_cell:
             row, col = self.active_cell
 
             if event.key == pygame.K_LEFT:
@@ -108,11 +74,10 @@ class MatrixInputGrid:
                 row = max(0, row - 1)
             elif event.key == pygame.K_DOWN:
                 row = min(1, row + 1)
-            else:
-                if event.key == pygame.K_BACKSPACE:
-                    self.cell_values[row][col] = self.cell_values[row][col][:-1]
-                elif event.unicode in "0123456789.-" and len(self.cell_values[row][col]) < 5:
-                    self.cell_values[row][col] += event.unicode
+            elif event.key == pygame.K_BACKSPACE:
+                self.cell_values[row][col] = self.cell_values[row][col][:-1]
+            elif event.unicode in "0123456789.-" and len(self.cell_values[row][col]) < 5:
+                self.cell_values[row][col] += event.unicode
 
             self.active_cell = (row, col)
 
@@ -121,15 +86,22 @@ class MatrixInputGrid:
         for row in range(2):
             current_row = []
             for col in range(2):
+                val_str = self.cell_values[row][col].strip()
+                if val_str == "":
+                    # Si hay alguna celda vacía, toda la matriz es inválida
+                    return None
                 try:
-                    val = float(self.cell_values[row][col])
+                    val = float(val_str)
                 except ValueError:
-                    val = 0.0
+                    # Si no es un número válido, también considerar inválido
+                    return None
                 current_row.append(val)
             result.append(current_row)
         return result
 
+
     def clear(self):
         self.cell_values = [["", ""], ["", ""]]
         self.active_cell = (0, 0)
+
 

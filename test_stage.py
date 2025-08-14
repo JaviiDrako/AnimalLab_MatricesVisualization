@@ -93,15 +93,21 @@ class TestStage:
 
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN and not self.applying_input:
-                        input_matrix = self.input_grid.get_matrix()
-                        is_valid = True 
+                        input_matrix = self.input_grid.get_matrix()  # Esto puede devolver None
+
+                        if input_matrix is None:
+                            self.error_message = "¡Completa todas las celdas!"
+                            self.error_message_time = current_time
+                            continue  # No hacer nada más
+
+                        is_valid = True
                         if self.phase == 1:
                             is_valid = self.is_valid_phase1_matrix(input_matrix)
                         elif self.phase == 2:
                             is_valid = self.is_valid_phase2_matrix(input_matrix)
 
                         if not is_valid:
-                            self.error_message = "¡Matriz invalida!" 
+                            self.error_message = "¡Matriz invalida!"
                             self.error_message_time = current_time
                         else:
                             self.visualizer.set_target_matrix(input_matrix)
