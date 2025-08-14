@@ -3,6 +3,7 @@ import sys
 from fractions import Fraction
 from imagen import ImageManager
 from visualizer import Visualizer
+from utils import resource_path
 
 class VirusPlayer:
     def __init__(self, screen, level=1, total_levels=5):  
@@ -14,7 +15,7 @@ class VirusPlayer:
         self.RED = (255, 35, 35)
 
         pygame.mixer.init()
-        pygame.mixer.music.load("assets/virus_music.wav")
+        pygame.mixer.music.load(resource_path("assets/virus_music.wav"))
         pygame.mixer.music.set_volume(0.6)
         pygame.mixer.music.play(-1)
 
@@ -113,12 +114,12 @@ class VirusPlayer:
         self.start_y = config["start_y"]
         self.max_time = config.get("max_time", 120) 
 
-        self.font = pygame.font.Font("assets/pixel_font.ttf", config["font_size"])
-        self.small_font = pygame.font.Font("assets/pixel_font.ttf", 30) 
-        self.large_font = pygame.font.Font("assets/pixel_font.ttf", 80)  
-        self.input_font = pygame.font.Font("assets/pixel_font.ttf", 60)
+        self.font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), config["font_size"])
+        self.small_font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 30) 
+        self.large_font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 80)  
+        self.input_font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 60)
 
-        self.background_image = pygame.image.load("assets/virus_bg.png").convert() 
+        self.background_image = pygame.image.load(resource_path("assets/virus_bg.png")).convert() 
         self.background_image = pygame.transform.scale(self.background_image, (self.WIDTH, self.HEIGHT))
         self.instructions_background = pygame.Rect(0, self.HEIGHT - 90, 1920, 100)  
 
@@ -140,7 +141,7 @@ class VirusPlayer:
                 positions = [(int(start_x + i * spacing), int(virus_y)) for i in range(num_viruses)]
 
         for pos in positions:
-            virus_image = ImageManager("assets/virus.png")
+            virus_image = ImageManager(resource_path("assets/virus.png"))
             virus_pixels = virus_image.get_centered_pixels()
             virus_visualizer = Visualizer(
                 screen=self.screen,
@@ -251,8 +252,8 @@ class VirusPlayer:
                         (self.input_box.x + 5, self.input_box.y + 5))
 
     def show_timeout_message(self, text):  
-        font = pygame.font.Font("assets/pixel_font.ttf", 60)
-        subfont = pygame.font.Font("assets/pixel_font.ttf", 40)
+        font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 60)
+        subfont = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 40)
 
         button = pygame.Rect(self.WIDTH // 2 - 200, self.HEIGHT // 2 + 80, 400, 70) 
         red_color = (255, 50, 50)  
@@ -325,7 +326,7 @@ class VirusPlayer:
 
             self.draw_matrix()
 
-            timer_font = pygame.font.Font("assets/pixel_font.ttf", 50)
+            timer_font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 50)
             minutes, seconds = divmod(remaining_time, 60)
             timer_str = f"{minutes:02}:{seconds:02}"
             timer_text = timer_font.render(f"Tiempo: {timer_str}", True, self.RED)  

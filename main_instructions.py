@@ -1,13 +1,14 @@
 import pygame
 from matrix_input_grid import MatrixInputGrid
+from utils import resource_path
 
 class InstructionMainScreen:
     def __init__(self, screen, width, height):
         self.screen = screen
         self.width = width
         self.height = height
-        self.background = pygame.transform.scale(pygame.image.load("assets/main_instructions.png"), (width, height))
-        self.font = pygame.font.Font("assets/pixel_font.ttf", 60)
+        self.background = pygame.transform.scale(pygame.image.load(resource_path("assets/main_instructions.png")), (width, height))
+        self.font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 60)
         self.input_grid = MatrixInputGrid(
             x=(width - 170) // 2,
             y=height - 400,

@@ -1,14 +1,15 @@
 import pygame
 import math
 from angle_input import AngleInput
+from utils import resource_path
 
 class RotationHelper:
     def __init__(self, x, y, width, height):
         self.rect = pygame.Rect(x, y, width, height)
         self.angle_input = AngleInput(x + 30, y + 80, 100, 40, 
-                                    pygame.font.Font("assets/pixel_font.ttf", 30))
+                                    pygame.font.Font(resource_path("assets/pixel_font.ttf"), 30))
         self.matrix_display = [[0.0, 0.0], [0.0, 0.0]]
-        self.font = pygame.font.Font("assets/pixel_font.ttf", 30)
+        self.font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 30)
         self.title = self.font.render("Calculadora de Rotacion", True, (255, 255, 255))
         self.label = self.font.render("Angulo (°):", True, (255, 255, 255))
 

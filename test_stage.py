@@ -3,6 +3,7 @@ from imagen import ImageManager
 from visualizer import Visualizer
 from matrix_input_grid import MatrixInputGrid
 from rotation_helper import RotationHelper 
+from utils import resource_path
 
 class TestStage:
     def __init__(self, screen, width, height, phase): 
@@ -12,9 +13,9 @@ class TestStage:
         self.clock = pygame.time.Clock()
         self.fps = 60
         self.background = pygame.transform.scale(  
-            pygame.image.load("assets/test_stage_bg.png"), (width, height)
+            pygame.image.load(resource_path("assets/test_stage_bg.png")), (width, height)
         )
-        self.font = pygame.font.Font("assets/pixel_font.ttf", 35)
+        self.font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 35)
 
         self.start_button = pygame.Rect(width // 2 - 900, height - 110, 280, 55)  
 
@@ -24,7 +25,7 @@ class TestStage:
                                       self.reset_icon_size,
                                       self.reset_icon_size)
 
-        self.reset_icon = pygame.image.load("assets/restart_icon.png").convert_alpha()
+        self.reset_icon = pygame.image.load(resource_path("assets/restart_icon.png")).convert_alpha()
         self.reset_icon = pygame.transform.scale(self.reset_icon,
                                                (self.reset_icon_size - 10, self.reset_icon_size - 10))
 
@@ -36,7 +37,7 @@ class TestStage:
         self.applying_input = False
 
     def reset_stage(self):
-        self.image_manager = ImageManager("assets/test_dummy.png")
+        self.image_manager = ImageManager(resource_path("assets/test_dummy.png"))
         pixels = self.image_manager.get_centered_pixels()
 
         self.visualizer = Visualizer(

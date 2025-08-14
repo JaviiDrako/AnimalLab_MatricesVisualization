@@ -1,5 +1,7 @@
 import pygame
 
+from utils import resource_path
+
 class LevelCompletedPopup: 
     def __init__(self, screen, elapsed_time, width, height, background_surface, fps):  
         self.screen = screen
@@ -10,9 +12,9 @@ class LevelCompletedPopup:
         self.FPS = fps
         self.clock = pygame.time.Clock()
 
-        self.font_title = pygame.font.Font("assets/pixel_font.ttf", 45)
-        self.font_timer = pygame.font.Font("assets/pixel_font.ttf", 35)
-        self.font_button = pygame.font.Font("assets/pixel_font.ttf", 30)
+        self.font_title = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 45)
+        self.font_timer = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 35)
+        self.font_button = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 30)
 
         self.button_rect = pygame.Rect(0, 0, 240, 60)  
         self.button_rect.center = (self.WIDTH // 2, self.HEIGHT // 2 + 80)

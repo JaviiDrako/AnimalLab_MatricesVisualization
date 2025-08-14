@@ -1,5 +1,6 @@
 import pygame
 import time
+
 from imagen import ImageManager
 from visualizer import Visualizer
 from matrix_input_grid import MatrixInputGrid 
@@ -12,6 +13,8 @@ from completed_level_popup import LevelCompletedPopup
 from virus_gauss_jordan import VirusPlayer
 from rotation_helper import RotationHelper
 from free_mode_stage import FreeModeStage
+from utils import resource_path
+
 
 pygame.init()
 
@@ -23,74 +26,74 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Animatrices Laboratory")
 clock = pygame.time.Clock()
 
-original_bg = pygame.image.load("assets/bg_game.png").convert()
+original_bg = pygame.image.load(resource_path("assets/bg_game.png")).convert()
 background = pygame.transform.scale(original_bg, (WIDTH, HEIGHT))
 
 phase1_levels = [ 
     {
-        "image": "assets/monkey.png",
+        "image": resource_path("assets/monkey.png"),
         "target_matrix": [[2, 0], [0, 2]] 
     },
     {
-        "image": "assets/snake.png",
+        "image": resource_path("assets/snake.png"),
         "target_matrix": [[1.5, 0], [0, 2]]
     },
     {
-        "image": "assets/elephant.png",
+        "image": resource_path("assets/elephant.png"),
         "target_matrix": [[1, 0], [0, 0.5]]
     },
     {
-        "image": "assets/crab.png",
+        "image": resource_path("assets/crab.png"),
         "target_matrix": [[0.5, 0], [0, 3]]
     },
     {
-        "image": "assets/goat.png",
+        "image": resource_path("assets/goat.png"),
         "target_matrix": [[2.4, 0], [0, 1.8]]
     }
 ]
 
 phase2_levels = [ 
     {
-        "image": "assets/dolphin.png",
+        "image": resource_path("assets/dolphin.png"),
         "target_matrix": [[1, 0.3], [0, 1]]
     },
     {
-        "image": "assets/capybara.png",
+        "image": resource_path("assets/capybara.png"),
         "target_matrix": [[1.5, 0], [-0.5, 1]]
     },
     {
-        "image": "assets/eagle.png",
+        "image": resource_path("assets/eagle.png"),
         "target_matrix": [[2, 0], [1, 1]]
     },
     {
-        "image": "assets/pig.png",
+        "image": resource_path("assets/pig.png"),
         "target_matrix": [[4, -2], [0, 0.5]]
     },
     {
-        "image": "assets/panda.png",
+        "image": resource_path("assets/panda.png"),
         "target_matrix": [[3.5, -1], [1, 0.8]]
     },
 ]
 
 phase3_levels = [
     {
-        "image": "assets/gorilla.png",
+        "image": resource_path("assets/gorilla.png"),
         "target_matrix": [[1.2, -1.8], [-2.8, 0.2]], 
     },
     {
-        "image": "assets/lion.png",
+        "image": resource_path("assets/lion.png"),
         "target_matrix": [[0, 1], [-1, 1]], 
     },
     {
-        "image": "assets/racoon.png",
+        "image": resource_path("assets/racoon.png"),
         "target_matrix": [[0.8, -0.5], [-0.5, 3.3]], 
     },
     {
-        "image": "assets/toucan.png",
+        "image": resource_path("assets/toucan.png"),
         "target_matrix": [[-0.5, -2.5], [1, -4.7]], 
     },
     {
-        "image": "assets/penguin.png",
+        "image": resource_path("assets/penguin.png"),
         "target_matrix": [[-1, -3.4], [2, 1]], 
     }
 ]
@@ -98,10 +101,10 @@ phase3_levels = [
 def show_lore(screen):
     video = VideoPlayer(screen)
 
-    video.play("assets/intro_lore.mp4", "assets/intro_lore.wav")
+    video.play(resource_path("assets/intro_lore.mp4"), resource_path("assets/intro_lore.wav"))
 
-    font = pygame.font.Font("assets/pixel_font.ttf", 35)
-    image = pygame.image.load("assets/complete_letters.png").convert()
+    font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 35)
+    image = pygame.image.load(resource_path("assets/complete_letters.png")).convert()
     image = pygame.transform.scale(image, (screen.get_width(), screen.get_height()))
     button = pygame.Rect(screen.get_width() // 2 - 100, screen.get_height() - 110, 200, 55) 
 
@@ -127,15 +130,15 @@ def show_lore(screen):
         screen.blit(text, text.get_rect(center=button.center))
         pygame.display.flip()
 
-    video.play("assets/outro_lore.mp4")
+    video.play(resource_path("assets/outro_lore.mp4"))
 
 def show_virus_completed_level(screen):
     video = VideoPlayer(screen)
 
-    video.play("assets/intro_virus_completed.mp4", "assets/intro_lore.wav")
+    video.play(resource_path("assets/intro_virus_completed.mp4"), resource_path("assets/intro_lore.wav"))
 
-    font = pygame.font.Font("assets/pixel_font.ttf", 40)
-    image = pygame.image.load("assets/virus_complete_letters.png").convert()
+    font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 40)
+    image = pygame.image.load(resource_path("assets/virus_complete_letters.png")).convert()
     image = pygame.transform.scale(image, (screen.get_width(), screen.get_height()))
     button = pygame.Rect(screen.get_width() // 2 - 150, screen.get_height() - 200, 300, 70) 
 
@@ -161,14 +164,14 @@ def show_virus_completed_level(screen):
         screen.blit(text, text.get_rect(center=button.center))
         pygame.display.flip()
 
-    video.play("assets/outro_virus_completed.mp4")
+    video.play(resource_path("assets/outro_virus_completed.mp4"))
 
 def show_popup(screen, image_path):
     popup_img = pygame.image.load(image_path).convert_alpha()
     popup_rect = popup_img.get_rect(center=screen.get_rect().center)
 
     x_button = pygame.Rect(popup_rect.right - 70, popup_rect.top + 5, 70, 70)
-    font = pygame.font.Font("assets/pixel_font.ttf", 40)
+    font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 40)
 
     clock = pygame.time.Clock()
     while True:
@@ -194,8 +197,8 @@ def show_popup(screen, image_path):
 
 
 def show_timeout(screen, text): 
-    font = pygame.font.Font("assets/pixel_font.ttf", 60)
-    subfont = pygame.font.Font("assets/pixel_font.ttf", 40)
+    font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 60)
+    subfont = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 40)
 
     button = pygame.Rect(screen.get_width() // 2 - 200, screen.get_height() // 2 + 80, 400, 70) 
     red = (255, 50, 50) 
@@ -254,9 +257,9 @@ def are_matrices_equal(m1, m2, tolerance=0.1):
                 return False
     return True
 
-def run_level(image_path, target_matrix, time, phase):
+def run_level(image_path, target_matrix, time_limit_value, phase):
     start_time = time.time()
-    time_limit = time
+    time_limit = time_limit_value
     timed_out = False
 
     image = ImageManager(image_path)
@@ -270,15 +273,15 @@ def run_level(image_path, target_matrix, time, phase):
 
     target_animated = False
     input_grid = MatrixInputGrid(x=(WIDTH - 150)//2, y=HEIGHT - 200, cell_size=70,
-                                 font=pygame.font.Font("assets/pixel_font.ttf", 35))
+                                 font=pygame.font.Font(resource_path("assets/pixel_font.ttf"), 35))
 
     # Rotation Helper only for phase 3
     rotation_helper = None
     if phase == 3:
         rotation_helper = RotationHelper(x=WIDTH-320, y=HEIGHT-270, width=300, height=220)
 
-    timer_font = pygame.font.Font("assets/pixel_font.ttf", 45)
-    error_font = pygame.font.Font("assets/pixel_font.ttf", 32)
+    timer_font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 45)
+    error_font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 32)
     applying_input = False
     running = True
     show_error_message = False
@@ -287,10 +290,10 @@ def run_level(image_path, target_matrix, time, phase):
 
     pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=4096)
     pygame.mixer.init()
-    pygame.mixer.music.load("assets/lab_music.wav")
+    pygame.mixer.music.load(resource_path("assets/lab_music.wav"))
     pygame.mixer.music.set_volume(0.7)
     pygame.mixer.music.play(-1)
-    explosion_sound = pygame.mixer.Sound("assets/explosion.mp3")
+    explosion_sound = pygame.mixer.Sound(resource_path("assets/explosion.mp3"))
     explosion_sound.set_volume(0.5)
 
     while running:
@@ -452,7 +455,7 @@ def run_level(image_path, target_matrix, time, phase):
 
 
 while True:
-    new_level_sound = pygame.mixer.Sound("assets/echo.mp3")
+    new_level_sound = pygame.mixer.Sound(resource_path("assets/echo.mp3"))
     new_level_sound.set_volume(0.5)
 
     menu = MainMenu(screen, WIDTH, HEIGHT)
@@ -470,14 +473,14 @@ while True:
 
         # Phase 1 introduction
         pygame.mixer.init()
-        pygame.mixer.music.load("assets/vhs_sound.mp3")
+        pygame.mixer.music.load(resource_path("assets/vhs_sound.mp3"))
         pygame.mixer.music.set_volume(0.5)
         pygame.mixer.music.play(-1)
-        phase1_intro = VideoLoopInstructions(screen, "assets/phase1_intro.mp4")  
+        phase1_intro = VideoLoopInstructions(screen, resource_path("assets/phase1_intro.mp4"))  
         phase1_intro.run()
 
         pygame.mixer.music.stop()
-        show_popup(screen, "assets/phase1_warning.png")  
+        show_popup(screen, resource_path("assets/phase1_warning.png"))  
 
         TestStage(screen, WIDTH, HEIGHT, 1).run()
 
@@ -494,14 +497,14 @@ while True:
 
             # Phase 2 introduction
             pygame.mixer.init()
-            pygame.mixer.music.load("assets/vhs_sound.mp3")
+            pygame.mixer.music.load(resource_path("assets/vhs_sound.mp3"))
             pygame.mixer.music.play(-1)
             pygame.mixer.music.set_volume(0.4)
-            phase2_intro = VideoLoopInstructions(screen, "assets/phase2_intro.mp4") 
+            phase2_intro = VideoLoopInstructions(screen, resource_path("assets/phase2_intro.mp4")) 
             phase2_intro.run()
 
             pygame.mixer.music.stop()
-            show_popup(screen, "assets/phase2_warning.png")
+            show_popup(screen, resource_path("assets/phase2_warning.png"))
 
             TestStage(screen, WIDTH, HEIGHT, 2).run() 
 
@@ -514,9 +517,9 @@ while True:
             if phase2_result != "menu":
                 # Virus section introduction
                 virus_intro = VideoPlayer(screen) 
-                virus_intro.play("assets/virus_alert.mp4", "assets/warning.mp3", 0.5)
+                virus_intro.play(resource_path("assets/virus_alert.mp4"), resource_path("assets/warning.mp3"), 0.5)
 
-                show_popup(screen, "assets/virus_instructions.png")
+                show_popup(screen, resource_path("assets/virus_instructions.png"))
 
                 # Play virus levels
                 all_virus_levels_completed = True  
@@ -533,14 +536,14 @@ while True:
 
                     # Phase 3 introduction
                     pygame.mixer.init()
-                    pygame.mixer.music.load("assets/vhs_sound.mp3")
+                    pygame.mixer.music.load(resource_path("assets/vhs_sound.mp3"))
                     pygame.mixer.music.play(-1)
                     pygame.mixer.music.set_volume(0.4)
-                    phase3_intro = VideoLoopInstructions(screen, "assets/phase3_intro.mp4") 
+                    phase3_intro = VideoLoopInstructions(screen, resource_path("assets/phase3_intro.mp4")) 
                     phase3_intro.run()
 
                     pygame.mixer.music.stop()
-                    show_popup(screen, "assets/phase3_warning.png")
+                    show_popup(screen, resource_path("assets/phase3_warning.png"))
 
                     TestStage(screen, WIDTH, HEIGHT, 3).run() 
 
@@ -554,10 +557,10 @@ while True:
                         pygame.mixer.music.stop()
 
                         video = VideoPlayer(screen)
-                        video.play("assets/ending1.mp4")
+                        video.play(resource_path("assets/ending1.mp4"))
                         
                         video = VideoPlayer(screen)
-                        video.play("assets/ending2.mp4", "assets/monster_roar.mp3")
+                        video.play(resource_path("assets/ending2.mp4"), resource_path("assets/monster_roar.mp3"))
 
                         continue
 

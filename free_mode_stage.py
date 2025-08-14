@@ -3,6 +3,7 @@ from imagen import ImageManager
 from visualizer import Visualizer
 from matrix_input_grid import MatrixInputGrid
 from rotation_helper import RotationHelper
+from utils import resource_path
 
 
 class FreeModeStage:
@@ -14,16 +15,16 @@ class FreeModeStage:
         self.fps = 60
 
         self.background = pygame.transform.scale(  
-            pygame.image.load("assets/free_mode_bg.png"), (width, height)
+            pygame.image.load(resource_path("assets/free_mode_bg.png")), (width, height)
         )
-        self.font = pygame.font.Font("assets/pixel_font.ttf", 35)
+        self.font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 35)
 
         self.animals = [
-            "assets/monkey.png", "assets/snake.png", "assets/elephant.png",
-            "assets/crab.png", "assets/goat.png", "assets/dolphin.png",
-            "assets/capybara.png", "assets/eagle.png", "assets/pig.png",
-            "assets/panda.png", "assets/gorilla.png", "assets/lion.png",
-            "assets/racoon.png", "assets/toucan.png", "assets/penguin.png"
+            resource_path("assets/monkey.png"), resource_path("assets/snake.png"), resource_path("assets/elephant.png"),
+            resource_path("assets/crab.png"), resource_path("assets/goat.png"), resource_path("assets/dolphin.png"),
+            resource_path("assets/capybara.png"), resource_path("assets/eagle.png"), resource_path("assets/pig.png"),
+            resource_path("assets/panda.png"), resource_path("assets/gorilla.png"), resource_path("assets/lion.png"),
+            resource_path("assets/racoon.png"), resource_path("assets/toucan.png"), resource_path("assets/penguin.png")
         ]
         self.current_index = 0
 
@@ -36,7 +37,7 @@ class FreeModeStage:
                                       self.reset_icon_size,
                                       self.reset_icon_size)
 
-        self.reset_icon = pygame.image.load("assets/restart_icon.png").convert_alpha()
+        self.reset_icon = pygame.image.load(resource_path("assets/restart_icon.png")).convert_alpha()
         self.reset_icon = pygame.transform.scale(self.reset_icon,
                                                (self.reset_icon_size - 10, self.reset_icon_size - 10))
 

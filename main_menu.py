@@ -1,13 +1,15 @@
 import pygame
 
+from utils import resource_path
+
 class MainMenu:
     def __init__(self, screen, width, height):
         self.screen = screen
         self.width = width
         self.height = height
-        self.font = pygame.font.Font("assets/pixel_font.ttf", 55)
+        self.font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 55)
 
-        original_bg = pygame.image.load("assets/bg_menu.png").convert()
+        original_bg = pygame.image.load(resource_path("assets/bg_menu.png")).convert()
         self.background = pygame.transform.scale(original_bg, (self.width, self.height))
 
         self.game_button = pygame.Rect(width // 2 - 200, height // 2 + 170, 400, 80)
@@ -16,7 +18,7 @@ class MainMenu:
     def run(self):
         pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=4096)
         pygame.mixer.init()
-        pygame.mixer.music.load("assets/intro_music.wav")
+        pygame.mixer.music.load(resource_path("assets/intro_music.wav"))
         pygame.mixer.music.set_volume(0.4)
         pygame.mixer.music.play(-1)  
 

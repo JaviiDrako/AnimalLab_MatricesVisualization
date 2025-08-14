@@ -2,11 +2,13 @@
 import pygame
 import cv2
 
+from utils import resource_path
+
 class VideoLoopInstructions:
     def __init__(self, screen, video_path):
         self.screen = screen
         self.video_path = video_path
-        self.font = pygame.font.Font("assets/pixel_font.ttf", 40)
+        self.font = pygame.font.Font(resource_path("assets/pixel_font.ttf"), 40)
         self.start_button = pygame.Rect(screen.get_width() // 2 + 550, screen.get_height() - 150, 300, 70) 
         self.clock = pygame.time.Clock()
         self.fps = 60  
