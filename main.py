@@ -18,11 +18,13 @@ from utils import resource_path
 
 pygame.init()
 
-WIDTH, HEIGHT = 1920, 1080
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+info = pygame.display.Info()
+
+WIDTH, HEIGHT = info.current_w, info.current_h
 WHITE = (255, 255, 255)
 FPS = 60
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Animatrices Laboratory")
 clock = pygame.time.Clock()
 
